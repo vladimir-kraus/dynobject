@@ -2,13 +2,19 @@ class DynObject(object):
 
     def __init__(self, source=None):
         if source is not None:
-            self.__dict__ = dict(source)
+            self.__dict__.update(source)
 
     def __str__(self):
         return str(self.__dict__)
 
     def __repr__(self):
         return repr(self.__dict__)
+
+    def __bool__(self):
+        return bool(self.__dict__)
+
+    def __len__(self):
+        return len(self.__dict__)
 
     def __dir__(self):
             return self.__dict__.keys()
