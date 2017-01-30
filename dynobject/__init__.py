@@ -3,9 +3,17 @@ __version__ = "0.1.0"
 
 class DynObject(object):
 
-    def __init__(self, source=None):
-        if source is not None:
-            self.__dict__.update(source)
+    def __init__(self, *args, **kwargs):
+        if len(args) > 1:
+            raise TypeError("invalid number of arguments")
+            
+        if len(args) == 1:
+            d = dict(args[0])
+        else:
+            d = dict()
+        
+        d.update(**kwargs)
+        self.__dict__.update(d)
 
     def __str__(self):
         return str(self.__dict__)
