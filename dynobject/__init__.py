@@ -6,12 +6,12 @@ class DynObject(object):
     def __init__(self, *args, **kwargs):
         if len(args) > 1:
             raise TypeError("invalid number of arguments")
-            
+
         if len(args) == 1:
             d = dict(args[0])
         else:
             d = dict()
-        
+
         d.update(**kwargs)
         self.__dict__.update(d)
 
@@ -24,8 +24,17 @@ class DynObject(object):
     def __bool__(self):
         return bool(self.__dict__)
 
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return self.__dict__ != other.__dict__
+
     def __len__(self):
         return len(self.__dict__)
+
+    def __contains__(self, item):
+        return item in self.__dict__
 
     def __dir__(self):
             return self.__dict__.keys()

@@ -18,17 +18,20 @@ class DynObjectTests(unittest.TestCase):
         source = dict(x=1, y=2)
         dobj = DynObject(source)
         self.assertEqual(dobj.__dict__, source)
+
         self.assertEqual(dobj.x, 1)
         self.assertEqual(dobj.y, 2)
+
         self.assertEqual(dobj["x"], 1)
         self.assertEqual(dobj["y"], 2)
 
     def test_init_with_kwargs(self):
-        source = dict(x=1, y=2)
         dobj = DynObject(x=1, y=2)
-        self.assertEqual(dobj.__dict__, source)
+        self.assertEqual(dobj.__dict__, dict(x=1, y=2))
+
         self.assertEqual(dobj.x, 1)
         self.assertEqual(dobj.y, 2)
+
         self.assertEqual(dobj["x"], 1)
         self.assertEqual(dobj["y"], 2)
 
@@ -36,10 +39,22 @@ class DynObjectTests(unittest.TestCase):
         dobj = DynObject(x=1, y=2)
         self.assertTrue(dobj)
         self.assertEqual(len(dobj), 2)
+
         self.assertEqual(dobj.x, 1)
         self.assertEqual(dobj.y, 2)
+
         self.assertEqual(dobj["x"], 1)
         self.assertEqual(dobj["y"], 2)
+
         self.assertListEqual(dir(dobj), ["x", "y"])
+
         self.assertEqual(str(dobj), str(dobj.__dict__))
         self.assertEqual(repr(dobj), repr(dobj.__dict__))
+
+        self.assertTrue("x" in dobj)
+        self.assertFalse("X" in dobj)
+
+        self.assertEqual(dobj, DynObject(x=1, y=2))
+        self.assertNotEqual(dobj, DynObject())
+        self.assertNotEqual(dobj, DynObject(x=2, y=2))
+        self.assertNotEqual(dobj, DynObject(x=1, y=2, z=3))
