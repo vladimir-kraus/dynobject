@@ -1,7 +1,9 @@
+from collections.abc import Container, Sized, Iterable
+
 __version__ = "0.1.0"
 
 
-class DynObject(object):
+class DynObject(Container, Iterable, Sized):  # Collection since Python 3.6
 
     def __init__(self, *args, **kwargs):
         if len(args) > 1:
