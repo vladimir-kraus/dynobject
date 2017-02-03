@@ -58,3 +58,8 @@ class DynObjectTests(unittest.TestCase):
         self.assertNotEqual(dobj, DynObject())
         self.assertNotEqual(dobj, DynObject(x=2, y=2))
         self.assertNotEqual(dobj, DynObject(x=1, y=2, z=3))
+
+    def test_string_repr(self):
+        dobj = DynObject(x=1)
+        self.assertEqual(str(dobj), "{'x': 1}")
+        self.assertEqual(repr(dobj), "{'x': 1}")

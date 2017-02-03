@@ -18,3 +18,12 @@ DynObject can be initialized from dict or using keyword arguments.
 >>> a = DynObject(d)
 >>> b = DynObject(x=10, y=20)  # equivalent to the above
 ```
+
+Convert to or use as dict:
+
+```python
+>>> a = DynObject(x=10, y=20)
+>>> d1 = a.__dict__  # not a copy!
+>>> d2 = dict(a.__dict__)  # a copy
+>>> d3 = {k: a[k] for k in dir(a)}  # a copy
+```
