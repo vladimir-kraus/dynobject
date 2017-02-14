@@ -1,21 +1,24 @@
 from collections.abc import Container, Sized, Iterable
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 
-class DynObject(Container, Iterable, Sized):  # Collection since Python 3.6
+class DynObject(Container, Iterable, Sized, object):
+    # collections.abc.Collection since Python 3.6
 
     def __init__(self, *args, **kwargs):
-        if len(args) > 1:
-            raise TypeError("invalid number of arguments")
-
-        if len(args) == 1:
-            d = dict(args[0])
-        else:
+        d = None
+        if not args and not kwargs:
             d = dict()
+        elif len(args) == 1 and not kwargs:
+            d = args[0]
+        elif kwargs and not args:
+            d = dict(kwargs)
 
-        d.update(**kwargs)
-        self.__dict__.update(d)
+        if d is not None:
+            super(DynObject, self).__setattr__("__dict__", d)
+        else:
+            raise TypeError("invalid arguments")
 
     def __str__(self):
         return str(self.__dict__)
@@ -41,27 +44,11 @@ class DynObject(Container, Iterable, Sized):  # Collection since Python 3.6
     def __dir__(self):
             return self.__dict__.keys()
 
-    def __getattr__(self, item):
-        try:
-            return self.__dict__[item]
-        except KeyError:
-            # this makes hasattr(...) work correctly
-            raise AttributeError(item)
-
     def __getitem__(self, item):
         return self.__dict__[item]
 
-    def __setattr__(self, key, value):
-        self.__dict__[key] = value
-
     def __setitem__(self, key, value):
         self.__dict__[key] = value
-
-    def __delattr__(self, item):
-        try:
-            del self.__dict__[item]
-        except KeyError:
-            raise AttributeError(item)
 
     def __delitem__(self, key):
         del self.__dict__[key]

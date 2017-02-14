@@ -17,6 +17,11 @@ class DynObjectTests(unittest.TestCase):
     def test_init_with_dict(self):
         source = dict(x=1, y=2)
         dobj = DynObject(source)
+        self.assertTrue(dobj)
+
+        # if the argument in init is a dict then we can test identity
+        self.assertTrue(dobj.__dict__ is source)
+
         self.assertEqual(dobj.__dict__, source)
 
         self.assertEqual(dobj.x, 1)
@@ -24,6 +29,19 @@ class DynObjectTests(unittest.TestCase):
 
         self.assertEqual(dobj["x"], 1)
         self.assertEqual(dobj["y"], 2)
+
+        self.assertTrue(hasattr(dobj, "x"))
+        self.assertEqual(getattr(dobj, "x"), 1)
+        self.assertTrue("x" in dobj)
+
+        with self.assertRaises(AttributeError):
+            getattr(dobj, "z")
+
+        with self.assertRaises(AttributeError):
+            dobj.z
+
+        with self.assertRaises(KeyError):
+            dobj["z"]
 
     def test_init_with_kwargs(self):
         dobj = DynObject(x=1, y=2)
@@ -63,3 +81,21 @@ class DynObjectTests(unittest.TestCase):
         dobj = DynObject(x=1)
         self.assertEqual(str(dobj), "{'x': 1}")
         self.assertEqual(repr(dobj), "{'x': 1}")
+
+    def test_del(self):
+        dobj = DynObject(x=1, y=2)
+        del dobj.x
+        self.assertEqual(dobj.__dict__, dict(y=2))
+
+        dobj = DynObject(x=1, y=2)
+        del dobj["x"]
+        self.assertEqual(dobj.__dict__, dict(y=2))
+
+    def test_setattr(self):
+        dobj = DynObject()
+        dobj.x = 1
+        self.assertEqual(dobj.__dict__, dict(x=1))
+
+        dobj = DynObject()
+        dobj["x"] = 1
+        self.assertEqual(dobj.__dict__, dict(x=1))
